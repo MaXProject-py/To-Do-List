@@ -53,14 +53,6 @@ class ListAndItemModelTest(TestCase):
 class ListViewTest(TestCase):
     """тест представления списка"""
 
-    def test_passes_correct_list_template(self):
-        '''тест: передается правильный шаблон списка'''
-        other_list = List.objects.create()
-        correct_list = List.objects.create()
-        response = self.client.get(f'/lists/{correct_list.id}/')
-        self.assertEqual(response.context['list'], correct_list)
-
-
     
     def test_uses_list_template(self):
         '''тест: используется шаблон списка'''
@@ -100,6 +92,14 @@ class ListViewTest(TestCase):
         new_list = List.objects.first()
 
         self.assertRedirects(response, f'/lists/{new_list.id}/')
+
+    def test_passes_correct_list_to_template(self):
+        '''тест: передается правильный шаблон списка'''
+        other_list = List.objects.create()
+        correct_list = List.objects.create()
+        response = self.client.get(f'/lists/{correct_list.id}/')
+        self.assertEqual(response.context['list'], correct_list)
+
 
 class NewItemTest(TestCase):
     '''тест нового элемента списка'''

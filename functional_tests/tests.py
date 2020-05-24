@@ -38,7 +38,7 @@ class NewVisitorTest(LiveServerTestCase):
         self.browser.get(self.live_server_url)
         self.assertIn('To-Do', self.browser.title)
         header_text = self.browser.find_element_by_tag_name('h1').text
-        self.assertIn('Your To-Do list', header_text)
+        self.assertIn('Start a new To-Do list', header_text)
 
         inputbox = self.browser.find_element_by_id('id_new_item')
         self.assertEquals(
