@@ -2,7 +2,7 @@ from django.urls import resolve
 from django.test import TestCase
 from django.http import HttpRequest
 from django.template.loader import render_to_string
-from lists.models import Item
+from lists.models import Item, List
 import string
 
 from lists.views import home_page, new_list, view_list
@@ -19,18 +19,26 @@ class HomePageTest(TestCase):
         self.assertTemplateUsed(response, 'home.html')
 
 
-class ItemModelTest(TestCase):
+class ListAndItemModelTest(TestCase):
     '''тест модели элемента списка'''
 
     def test_saving_and_retrieving_item(self):
         '''тест сохранения и получения элементов списка'''
+        list_ = List()
+        list_.save()
+
         first_item = Item()
         first_item.text = 'The first (ever) list item'
+        first_item.list1 = list_
         first_item.save()
 
         second_item = Item()
         second_item.text = 'Item the second'
+        second_item.list1 = list_
         second_item.save()
+
+        saved_list = List.objects.first()
+        self.assertEqual(saved_list, list_)
 
         saved_item = Item.objects.all()
         self.assertEqual(saved_item.count(), 2)
@@ -38,7 +46,9 @@ class ItemModelTest(TestCase):
         first_saved_item = saved_item[0]
         second_saved_item = saved_item[1]
         self.assertEqual(first_saved_item.text, 'The first (ever) list item')
+        self.assertEqual(first_saved_item.list1, list_)
         self.assertEqual(second_saved_item.text, 'Item the second')
+        self.assertEqual(second_saved_item.list1, list_)
 
 class ListViewTest(TestCase):
     """тест представления списка"""
@@ -51,9 +61,9 @@ class ListViewTest(TestCase):
 
     def test_displays_all_item(self):   
         '''тест: отображаются все элементы списка'''
-
-        Item.objects.create(text='Itemey 1')
-        Item.objects.create(text='Itemey 2')
+        list_ = List.objects.create()
+        Item.objects.create(text='Itemey 1', list1=list_)
+        Item.objects.create(text='Itemey 2', list1=list_)
 
         response = self.client.get('/lists/new_list/')
 

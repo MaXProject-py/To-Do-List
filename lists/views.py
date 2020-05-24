@@ -1,6 +1,6 @@
 from django.shortcuts import redirect, render
 from django.http import HttpResponse
-from lists.models import Item
+from lists.models import Item, List
 # Create your views here.
 def home_page(request):
     '''домашняя страница'''
@@ -13,5 +13,6 @@ def view_list(request):
 
 def new_list(request):
     '''новый список'''
-    Item.objects.create(text=request.POST['item_text'])
+    list_ = List.objects.create()
+    Item.objects.create(text=request.POST['item_text'], list1=list_)
     return redirect('/lists/new_list/')
